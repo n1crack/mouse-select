@@ -1,10 +1,14 @@
 # mouse-select
 Mouse selection plugin for ES2015.
 
-## basic usage
+## installation
+````
+npm install mouse-select
+````
 
+## basic usage
 ````javascript
-import mselect from '../src/index';
+import mselect from 'mouse-select';
 
 window.select = new mselect({
     el: 'ul'

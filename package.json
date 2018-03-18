@@ -1,7 +1,7 @@
 {
   "name": "mouse-select",
-  "version": "0.1.1",
-  "description": "Mouse selection plugin for native javascript.",
+  "version": "0.1.2",
+  "description": "Mouse selection plugin for ES2015.",
   "main": "src/index.js",
   "scripts": {
     "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
