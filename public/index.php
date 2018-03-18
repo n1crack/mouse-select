@@ -29,7 +29,7 @@
 </head>
 <body>
 <div class="container">
-<h1>mselect javascript plugin</h1>
+<h1>mouse-select javascript class</h1>
 <ul>
     <li></li>
     <li></li>

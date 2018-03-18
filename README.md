@@ -1,5 +1,5 @@
 # mouse-select
-Mouse selection plugin for ES2015.
+An elegant javascript class for mouse selection.
 
 ## Demo
 Try it: [Live demo](https://n1crack.github.io/mouse-select/demo.html)
