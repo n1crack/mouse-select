@@ -1,5 +1,5 @@
 # mouse-select
-Mouse selection plugin for native javascript.
+Mouse selection plugin for ES2015.
 
 ## basic usage
 
