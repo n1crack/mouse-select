@@ -1,0 +1,31 @@
+{
+  "name": "mselect",
+  "version": "0.1.0",
+  "description": "Mouse selection plugin for native javascript.",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "homepage": "https://github.com/n1crack/mselect#readme",
+  "keywords": [
+    "javascript",
+    "mouse selection",
+    "selectable",
+    "mouse events"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n1crack/mselect.git"
+  },
+  "author": {
+    "name": "Yusuf Özdemir",
+    "mail": "yusuf@ozdemir.be"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "laravel-mix": "^2.0.0"
+  }
+}
