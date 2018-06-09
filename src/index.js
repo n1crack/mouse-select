@@ -43,29 +43,26 @@ class mselect {
     }
 
     startSelection(e) {
-        if (!this.enabled) {
-            return;
-        }
-        this.x1 = e.pageX;
-        this.y1 = e.pageY;
-        if ((this.container.offsetLeft + this.container.clientWidth) > e.clientX) {
-            this.selection = true;
+        if (this.enabled) {
+            this.x1 = e.pageX;
+            this.y1 = e.pageY;
+            if ((this.container.offsetLeft + this.container.clientWidth) > e.clientX) {
+                this.selection = true;
+            }
         }
     }
 
     stopSelection(e) {
-        if (!this.enabled) {
-            return;
+        if (this.enabled) {
+            this.selection = false;
+            Object.assign(this.selectbox.style, {top: 0, left: 0, width: 0, height: 0});
         }
-        this.selection = false;
-        Object.assign(this.selectbox.style, {top: 0, left: 0, width: 0, height: 0});
     }
 
     calcSelection(e) {
-        e.preventDefault();
-        if (!this.enabled || !this.selection) {
-            return;
-        }
+        // e.preventDefault();
+        if (this.enabled && this.selection) {
+
 
         let x = e.pageX;
         let y = e.pageY;
@@ -103,6 +100,8 @@ class mselect {
                     }
                 }
             }.bind(this))
+
+        }
     }
 
     getPositionsInPixels() {
