@@ -45,8 +45,8 @@ class mselect {
 
     startSelection(e) {
         if (this.enabled) {
-            this.x1 = e.pageX - this.container.getBoundingClientRect().left - window.scrollX;
-            this.y1 = e.pageY - this.container.getBoundingClientRect().top - window.scrollY;
+            this.x1 = e.pageX - this.container.getBoundingClientRect().left - window.scrollX+ this.container.scrollLeft;
+            this.y1 = e.pageY - this.container.getBoundingClientRect().top - window.scrollY+ this.container.scrollTop;
             if ((this.container.offsetLeft + this.container.clientWidth) > e.clientX) {
                 this.selection = true;
             }
@@ -63,22 +63,22 @@ class mselect {
     calcSelection(e) {
         if (this.enabled && this.selection) {
 
-            let x = e.pageX - this.container.getBoundingClientRect().left - window.scrollX;
-            let y = e.pageY - this.container.getBoundingClientRect().top - window.scrollY;
+            let x = e.pageX - this.container.getBoundingClientRect().left - window.scrollX + this.container.scrollLeft;
+            let y = e.pageY - this.container.getBoundingClientRect().top - window.scrollY + this.container.scrollTop;
 
             this.box.top = Math.max(0, Math.min(y, this.y1));
             this.box.left = Math.max(0, Math.min(x, this.x1));
 
             if (this.y1 < y) {
-                this.box.height = Math.min(this.container.offsetHeight - this.y1, y - this.y1);
+                this.box.height = Math.min(this.container.offsetHeight - this.y1 + this.container.scrollTop, y - this.y1);
             } else {
-                this.box.height = Math.min(this.y1, this.y1 - y);
+                this.box.height = Math.min(this.y1 + this.container.scrollTop, this.y1 - y);
             }
 
             if (this.x1 < x) {
-                this.box.width = Math.min(this.container.offsetWidth - this.x1, x - this.x1);
+                this.box.width = Math.min(this.container.offsetWidth - this.x1 + this.container.scrollLeft, x - this.x1);
             } else {
-                this.box.width = Math.min(this.x1, this.x1 - x);
+                this.box.width = Math.min(this.x1 + this.container.scrollLeft, this.x1 - x);
             }
 
             Object.assign(this.selectbox.style, this.getPositionsInPixels());
