@@ -47,9 +47,7 @@ class mselect {
         if (this.enabled) {
             this.x1 = e.pageX - this.container.getBoundingClientRect().left - window.scrollX+ this.container.scrollLeft;
             this.y1 = e.pageY - this.container.getBoundingClientRect().top - window.scrollY+ this.container.scrollTop;
-            if ((this.container.offsetLeft + this.container.clientWidth) > e.clientX) {
                 this.selection = true;
-            }
         }
     }
 
@@ -89,10 +87,10 @@ class mselect {
 
             this.container.querySelectorAll(this.nodes)
                 .forEach(function (item, index) {
-                    if ((this.box.top < (item.offsetTop + item.offsetHeight - this.container.scrollTop))
-                        && ((this.box.top + this.box.height) > (item.offsetTop - this.container.scrollTop))
-                        && ((this.box.left) < (item.offsetLeft + item.offsetWidth - this.container.scrollLeft))
-                        && ((this.box.left + this.box.width) > (item.offsetLeft - this.container.scrollLeft))
+                    if ((this.box.top < (item.offsetTop + item.offsetHeight ))
+                        && ((this.box.top + this.box.height) > (item.offsetTop ))
+                        && ((this.box.left) < (item.offsetLeft + item.offsetWidth ))
+                        && ((this.box.left + this.box.width) > (item.offsetLeft ))
                     ) {
                         if (typeof this.select === "function") {
                             this.select(item, index);
