@@ -2,7 +2,7 @@
 An elegant javascript class for mouse selection.
 
 ## Demo
-Try it: [Live demo](https://n1crack.github.io/mouse-select/demo.html)
+Try it: [Live demo](https://codepen.io/anon/pen/vrWXxX)
 
 ## installation
 ````
