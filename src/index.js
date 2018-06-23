@@ -44,7 +44,7 @@ class mselect {
     }
 
     startSelection(e) {
-        if (this.enabled) {
+        if (this.enabled && e.which === 1) {
             this.x1 = e.pageX - this.container.getBoundingClientRect().left - window.scrollX+ this.container.scrollLeft;
             this.y1 = e.pageY - this.container.getBoundingClientRect().top - window.scrollY+ this.container.scrollTop;
                 this.selection = true;
@@ -52,7 +52,7 @@ class mselect {
     }
 
     stopSelection(e) {
-        if (this.enabled) {
+        if (this.enabled && e.which === 1) {
             this.selection = false;
             Object.assign(this.selectbox.style, {top: 0, left: 0, width: 0, height: 0});
         }
