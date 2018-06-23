@@ -14,5 +14,7 @@ select.onSelect(function (item, index) {
         .forEach(function (el) {
             el.classList.remove("active")
         });
+}).onSelected(function () {
+    console.log('it is selected');
 });
 
