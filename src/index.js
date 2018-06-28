@@ -33,26 +33,11 @@ class mselect {
         return this;
     }
 
-    onClear(func) {
-        this.clear = func;
-        return this;
-    }
-
-    onSelect(func) {
-        this.select = func;
-        return this;
-    }
-
-    onSelected(func) {
-        this.selected = func;
-        return this;
-    }
-
     startSelection(e) {
         if (this.enabled && e.which === 1) {
-            this.x1 = e.pageX - this.container.getBoundingClientRect().left - window.scrollX+ this.container.scrollLeft;
-            this.y1 = e.pageY - this.container.getBoundingClientRect().top - window.scrollY+ this.container.scrollTop;
-                this.selection = true;
+            this.x1 = e.pageX - this.container.getBoundingClientRect().left - window.scrollX + this.container.scrollLeft;
+            this.y1 = e.pageY - this.container.getBoundingClientRect().top - window.scrollY + this.container.scrollTop;
+            this.selection = true;
         }
     }
 
@@ -60,7 +45,9 @@ class mselect {
         if (this.enabled && e.which === 1) {
             this.selection = false;
             Object.assign(this.selectbox.style, {top: 0, left: 0, width: 0, height: 0});
-            this.selected();
+            if (typeof this.mouseup === "function") {
+                this.mouseup();
+            }
         }
     }
 
@@ -87,19 +74,19 @@ class mselect {
 
             Object.assign(this.selectbox.style, this.getPositionsInPixels());
 
-            if (typeof this.clear === "function") {
-                this.clear();
+            if (typeof this.mousedown === "function") {
+                this.mousedown();
             }
 
             this.container.querySelectorAll(this.nodes)
                 .forEach(function (item, index) {
-                    if ((this.box.top < (item.offsetTop + item.offsetHeight ))
-                        && ((this.box.top + this.box.height) > (item.offsetTop ))
-                        && ((this.box.left) < (item.offsetLeft + item.offsetWidth ))
-                        && ((this.box.left + this.box.width) > (item.offsetLeft ))
+                    if ((this.box.top < (item.offsetTop + item.offsetHeight))
+                        && ((this.box.top + this.box.height) > (item.offsetTop))
+                        && ((this.box.left) < (item.offsetLeft + item.offsetWidth))
+                        && ((this.box.left + this.box.width) > (item.offsetLeft))
                     ) {
-                        if (typeof this.select === "function") {
-                            this.select(item, index);
+                        if (typeof this.mousemove === "function") {
+                            this.mousemove(item, index);
                         }
                     }
                 }.bind(this))
