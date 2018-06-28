@@ -12,6 +12,11 @@ class mselect {
         this.y1 = 0;
         this.box = {};
 
+        this.mousedown =options.mousedown || false;
+        this.mouseup =options.mouseup || false;
+        this.mousemove =options.mousemove || false;
+
+
         this.selectbox = document.createElement('div');
         this.selectbox.setAttribute('style', 'position:absolute;opacity: 0.25;' +
             'display:block;border: 1px solid deepskyblue;background: lightblue;z-index: 9999');
