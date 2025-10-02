@@ -1,31 +1,63 @@
 {
   "name": "mouse-select",
-  "version": "1.2.2",
-  "description": "An elegant javascript class for mouse selection.",
-  "main": "src/index.js",
+  "version": "2.0.0",
+  "description": "A modern, elegant JavaScript library for mouse-based selection with customizable styling and comprehensive API.",
+  "main": "dist/mouse-select.js",
+  "module": "dist/mouse-select.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "dev": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "hot": "NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    "dev": "vite",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "homepage": "https://github.com/n1crack/mouse-select#readme",
   "keywords": [
     "javascript",
     "mouse selection",
     "selectable",
-    "mouse events"
+    "mouse events",
+    "selection",
+    "ui",
+    "interaction",
+    "dom",
+    "library"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/n1crack/mouse-select.git"
   },
+  "bugs": {
+    "url": "https://github.com/n1crack/mouse-select/issues"
+  },
   "author": {
     "name": "Yusuf Özdemir",
-    "mail": "yusuf@ozdemir.be"
+    "email": "yusuf@ozdemir.be"
   },
   "license": "MIT",
   "devDependencies": {
-    "laravel-mix": "^2.0.0"
-  }
+    "eslint": "^8.0.0",
+    "terser": "^5.44.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }
