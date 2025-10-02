@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MouseSelect Enhanced Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .demo-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .demo-section h2 {
+            color: #555;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #00bfff;
+            padding-bottom: 10px;
+        }
+
+        .demo-section p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .selection-container {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 200px;
+            position: relative;
+            background: #fafafa;
+            outline: none; /* For keyboard focus */
+        }
+
+        .selection-container:focus {
+            border-color: #00bfff;
+            box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.2);
+        }
+
+        .item {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .item:hover {
+            background: #f0f8ff;
+            border-color: #00bfff;
+        }
+
+        .item.selected {
+            background: #00bfff;
+            color: white;
+            border-color: #0099cc;
+            transform: scale(1.05);
+        }
+
+        .item.disabled {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            background: #00bfff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn:hover {
+            background: #0099cc;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn.danger {
+            background: #ff6b6b;
+        }
+
+        .btn.danger:hover {
+            background: #ff5252;
+        }
+
+        .btn.success {
+            background: #4caf50;
+        }
+
+        .btn.success:hover {
+            background: #45a049;
+        }
+
+        .status {
+            background: #e8f4fd;
+            border: 1px solid #00bfff;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-family: monospace;
+        }
+
+        .keyboard-hints {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .keyboard-hints h4 {
+            margin-bottom: 5px;
+            color: #856404;
+        }
+
+        .keyboard-hints ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .keyboard-hints li {
+            margin-bottom: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .virtual-scroll-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .virtual-item {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .virtual-item:hover {
+            background: #f0f8ff;
+        }
+
+        .virtual-item.selected {
+            background: #00bfff;
+            color: white;
+        }
+
+        .drag-drop-demo {
+            display: flex;
+            gap: 20px;
+        }
+
+        .drop-zone {
+            flex: 1;
+            min-height: 200px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: #f9f9f9;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #00bfff;
+            background: #f0f8ff;
+        }
+
+        .feature-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .feature-toggle input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MouseSelect Enhanced Demo</h1>
+
+        <!-- Keyboard Selection Demo -->
+        <div class="demo-section">
+            <h2>🎹 Keyboard Selection</h2>
+            <p>Use keyboard shortcuts for powerful selection control!</p>
+            
+            <div class="keyboard-hints">
+                <h4>Keyboard Shortcuts:</h4>
+                <ul>
+                    <li><strong>Ctrl+A</strong> - Select all items</li>
+                    <li><strong>Shift+Click</strong> - Range selection</li>
+                    <li><strong>Ctrl+Click</strong> - Toggle individual items</li>
+                    <li><strong>Arrow Keys</strong> - Navigate and select</li>
+                    <li><strong>Shift+Arrow</strong> - Range selection with keyboard</li>
+                    <li><strong>Space</strong> - Toggle current item</li>
+                    <li><strong>Escape</strong> - Clear selection</li>
+                </ul>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" id="enable-keyboard">Enable Keyboard</button>
+                <button class="btn" id="disable-keyboard">Disable Keyboard</button>
+                <button class="btn success" id="select-all-keyboard">Select All</button>
+                <button class="btn" id="invert-keyboard">Invert Selection</button>
+                <button class="btn danger" id="clear-keyboard">Clear Selection</button>
+            </div>
+            
+            <div class="status" id="status-keyboard">Status: Disabled</div>
+            
+            <div class="selection-container" id="keyboard-container" tabindex="0">
+                <div class="item" data-category="fruit">🍎 Apple</div>
+                <div class="item" data-category="fruit">🍌 Banana</div>
+                <div class="item" data-category="vegetable">🥕 Carrot</div>
+                <div class="item" data-category="fruit">🍇 Grape</div>
+                <div class="item" data-category="vegetable">🥔 Potato</div>
+                <div class="item" data-category="fruit">🍊 Orange</div>
+                <div class="item" data-category="vegetable">🥒 Cucumber</div>
+                <div class="item" data-category="fruit">🍓 Strawberry</div>
+            </div>
+        </div>
+
+        <!-- Programmatic Selection Demo -->
+        <div class="demo-section">
+            <h2>🔧 Programmatic Selection</h2>
+            <p>Select items programmatically by index, data attributes, or classes!</p>
+            
+            <div class="controls">
+                <button class="btn" id="enable-programmatic">Enable Selection</button>
+                <button class="btn" id="disable-programmatic">Disable Selection</button>
+                <button class="btn success" id="select-by-index">Select by Index [0,2,4]</button>
+                <button class="btn success" id="select-by-category">Select Fruits</button>
+                <button class="btn success" id="select-by-data">Select by Data</button>
+                <button class="btn danger" id="clear-programmatic">Clear Selection</button>
+            </div>
+            
+            <div class="status" id="status-programmatic">Status: Disabled</div>
+            
+            <div class="selection-container" id="programmatic-container">
+                <div class="item" data-category="fruit" data-price="1.50">🍎 Apple - $1.50</div>
+                <div class="item" data-category="fruit" data-price="0.80">🍌 Banana - $0.80</div>
+                <div class="item" data-category="vegetable" data-price="0.60">🥕 Carrot - $0.60</div>
+                <div class="item" data-category="fruit" data-price="2.00">🍇 Grape - $2.00</div>
+                <div class="item" data-category="vegetable" data-price="1.20">🥔 Potato - $1.20</div>
+                <div class="item" data-category="fruit" data-price="1.80">🍊 Orange - $1.80</div>
+                <div class="item" data-category="vegetable" data-price="0.90">🥒 Cucumber - $0.90</div>
+                <div class="item" data-category="fruit" data-price="3.00">🍓 Strawberry - $3.00</div>
+            </div>
+        </div>
+
+        <!-- Selection Validation Demo -->
+        <div class="demo-section">
+            <h2>✅ Selection Validation</h2>
+            <p>Custom validation rules - only items with price > $1.00 can be selected!</p>
+            
+            <div class="controls">
+                <button class="btn" id="enable-validation">Enable Selection</button>
+                <button class="btn" id="disable-validation">Disable Selection</button>
+                <button class="btn success" id="select-all-validation">Try Select All</button>
+                <button class="btn danger" id="clear-validation">Clear Selection</button>
+            </div>
+            
+            <div class="status" id="status-validation">Status: Disabled</div>
+            
+            <div class="selection-container" id="validation-container">
+                <div class="item" data-price="1.50">🍎 Apple - $1.50</div>
+                <div class="item disabled" data-price="0.80">🍌 Banana - $0.80 (Too cheap!)</div>
+                <div class="item disabled" data-price="0.60">🥕 Carrot - $0.60 (Too cheap!)</div>
+                <div class="item" data-price="2.00">🍇 Grape - $2.00</div>
+                <div class="item" data-price="1.20">🥔 Potato - $1.20</div>
+                <div class="item" data-price="1.80">🍊 Orange - $1.80</div>
+                <div class="item disabled" data-price="0.90">🥒 Cucumber - $0.90 (Too cheap!)</div>
+                <div class="item" data-price="3.00">🍓 Strawberry - $3.00</div>
+            </div>
+        </div>
+
+        <!-- Virtual Scrolling Demo -->
+        <div class="demo-section">
+            <h2>📜 Virtual Scrolling</h2>
+            <p>Efficiently handle large lists with virtual scrolling!</p>
+            
+            <div class="controls">
+                <button class="btn" id="enable-virtual">Enable Virtual Scrolling</button>
+                <button class="btn" id="disable-virtual">Disable Virtual Scrolling</button>
+                <button class="btn success" id="select-some-virtual">Select Some Items</button>
+                <button class="btn danger" id="clear-virtual">Clear Selection</button>
+            </div>
+            
+            <div class="status" id="status-virtual">Status: Disabled</div>
+            
+            <div class="virtual-scroll-container" id="virtual-container">
+                <!-- Items will be generated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Touch Support Demo -->
+        <div class="demo-section">
+            <h2>📱 Touch Support</h2>
+            <p>Touch-friendly selection for mobile devices!</p>
+            
+            <div class="feature-toggle">
+                <input type="checkbox" id="touch-enabled" checked>
+                <label for="touch-enabled">Enable Touch Support</label>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" id="enable-touch">Enable Selection</button>
+                <button class="btn" id="disable-touch">Disable Selection</button>
+                <button class="btn danger" id="clear-touch">Clear Selection</button>
+            </div>
+            
+            <div class="status" id="status-touch">Status: Disabled</div>
+            
+            <div class="selection-container" id="touch-container">
+                <div class="item">📱 Touch Item 1</div>
+                <div class="item">📱 Touch Item 2</div>
+                <div class="item">📱 Touch Item 3</div>
+                <div class="item">📱 Touch Item 4</div>
+                <div class="item">📱 Touch Item 5</div>
+                <div class="item">📱 Touch Item 6</div>
+            </div>
+        </div>
+
+        <!-- Drag and Drop Demo -->
+        <div class="demo-section">
+            <h2>🔄 Drag and Drop Integration</h2>
+            <p>Drag selected items between containers!</p>
+            
+            <div class="feature-toggle">
+                <input type="checkbox" id="drag-enabled">
+                <label for="drag-enabled">Enable Drag and Drop</label>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" id="enable-drag">Enable Selection</button>
+                <button class="btn" id="disable-drag">Disable Selection</button>
+                <button class="btn danger" id="clear-drag">Clear Selection</button>
+            </div>
+            
+            <div class="status" id="status-drag">Status: Disabled</div>
+            
+            <div class="drag-drop-demo">
+                <div class="selection-container" id="drag-container">
+                    <div class="item" draggable="true">📦 Drag Item 1</div>
+                    <div class="item" draggable="true">📦 Drag Item 2</div>
+                    <div class="item" draggable="true">📦 Drag Item 3</div>
+                    <div class="item" draggable="true">📦 Drag Item 4</div>
+                </div>
+                
+                <div class="drop-zone" id="drop-zone">
+                    <p>Drop items here!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Examples -->
+        <div class="demo-section">
+            <h2>💻 Code Examples</h2>
+            
+            <h3>Enhanced Initialization</h3>
+            <div class="code-block">
+const selector = new MouseSelect({
+    container: '#my-container',
+    selectable: '.item',
+    keyboardEnabled: true,
+    touchEnabled: true,
+    dragEnabled: false,
+    virtualScrolling: false,
+    validation: (element) => {
+        // Only allow selection of items with price > $1.00
+        const price = parseFloat(element.getAttribute('data-price'));
+        return price > 1.00;
+    },
+    onKeyboardSelect: (element, index, selectedItems) => {
+        console.log('Keyboard selection:', element.textContent);
+    },
+    onTouchStart: (e) => {
+        console.log('Touch started');
+    }
+});
+            </div>
+
+            <h3>Programmatic Selection</h3>
+            <div class="code-block">
+// Select by index
+selector.selectByIndex(0);
+
+// Select multiple indices
+selector.selectByIndices([0, 2, 4]);
+
+// Select by data attribute
+selector.selectByDataAttribute('data-category', 'fruit');
+
+// Select by class
+selector.selectByClass('highlighted');
+
+// Invert selection
+selector.invertSelection();
+
+// Get selected data
+const prices = selector.getSelectedData('data-price');
+            </div>
+
+            <h3>Feature Control</h3>
+            <div class="code-block">
+// Enable/disable features
+selector.enableKeyboard();
+selector.disableTouch();
+selector.enableDrag();
+selector.enableVirtualScrolling(60);
+
+// Set custom validation
+selector.setValidation((element) => {
+    return !element.classList.contains('disabled');
+});
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Enhanced MouseSelect -->
+    <script src="./mouse-select-enhanced.js"></script>
+    <script>
+        // Initialize all selectors
+        let keyboardSelector = null;
+        let programmaticSelector = null;
+        let validationSelector = null;
+        let virtualSelector = null;
+        let touchSelector = null;
+        let dragSelector = null;
+
+        // Keyboard Selection Demo
+        document.getElementById('enable-keyboard').addEventListener('click', () => {
+            if (!keyboardSelector) {
+                keyboardSelector = new MouseSelect({
+                    container: '#keyboard-container',
+                    selectable: '.item',
+                    keyboardEnabled: true,
+                    onStart: () => {
+                        document.getElementById('status-keyboard').textContent = 'Status: Selecting...';
+                    },
+                    onSelect: (element, index, selectedItems) => {
+                        element.classList.add('selected');
+                        document.getElementById('status-keyboard').textContent = 
+                            `Status: Enabled - ${selectedItems.length} items selected`;
+                    },
+                    onEnd: (e, selectedItems) => {
+                        document.getElementById('status-keyboard').textContent = 
+                            `Status: Enabled - ${selectedItems.length} items selected`;
+                    },
+                    onKeyboardSelect: (element, index, selectedItems) => {
+                        document.getElementById('status-keyboard').textContent = 
+                            `Status: Keyboard selection - ${selectedItems.length} items selected`;
+                    }
+                });
+            }
+            keyboardSelector.enable();
+            document.getElementById('status-keyboard').textContent = 'Status: Enabled';
+        });
+
+        document.getElementById('disable-keyboard').addEventListener('click', () => {
+            if (keyboardSelector) {
+                keyboardSelector.disable();
+                document.getElementById('status-keyboard').textContent = 'Status: Disabled';
+            }
+        });
+
+        document.getElementById('select-all-keyboard').addEventListener('click', () => {
+            if (keyboardSelector) {
+                keyboardSelector.selectAll();
+                document.querySelectorAll('#keyboard-container .item').forEach(el => {
+                    el.classList.add('selected');
+                });
+            }
+        });
+
+        document.getElementById('invert-keyboard').addEventListener('click', () => {
+            if (keyboardSelector) {
+                keyboardSelector.invertSelection();
+                document.querySelectorAll('#keyboard-container .item').forEach(el => {
+                    el.classList.toggle('selected');
+                });
+            }
+        });
+
+        document.getElementById('clear-keyboard').addEventListener('click', () => {
+            if (keyboardSelector) {
+                keyboardSelector.clearSelection();
+                document.querySelectorAll('#keyboard-container .selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+            }
+        });
+
+        // Programmatic Selection Demo
+        document.getElementById('enable-programmatic').addEventListener('click', () => {
+            if (!programmaticSelector) {
+                programmaticSelector = new MouseSelect({
+                    container: '#programmatic-container',
+                    selectable: '.item',
+                    onSelect: (element, index, selectedItems) => {
+                        element.classList.add('selected');
+                        document.getElementById('status-programmatic').textContent = 
+                            `Status: Enabled - ${selectedItems.length} items selected`;
+                    }
+                });
+            }
+            programmaticSelector.enable();
+            document.getElementById('status-programmatic').textContent = 'Status: Enabled';
+        });
+
+        document.getElementById('disable-programmatic').addEventListener('click', () => {
+            if (programmaticSelector) {
+                programmaticSelector.disable();
+                document.getElementById('status-programmatic').textContent = 'Status: Disabled';
+            }
+        });
+
+        document.getElementById('select-by-index').addEventListener('click', () => {
+            if (programmaticSelector) {
+                programmaticSelector.selectByIndices([0, 2, 4]);
+                document.querySelectorAll('#programmatic-container .item').forEach((el, index) => {
+                    if ([0, 2, 4].includes(index)) {
+                        el.classList.add('selected');
+                    } else {
+                        el.classList.remove('selected');
+                    }
+                });
+            }
+        });
+
+        document.getElementById('select-by-category').addEventListener('click', () => {
+            if (programmaticSelector) {
+                programmaticSelector.selectByDataAttribute('data-category', 'fruit');
+                document.querySelectorAll('#programmatic-container .item').forEach(el => {
+                    if (el.getAttribute('data-category') === 'fruit') {
+                        el.classList.add('selected');
+                    } else {
+                        el.classList.remove('selected');
+                    }
+                });
+            }
+        });
+
+        document.getElementById('select-by-data').addEventListener('click', () => {
+            if (programmaticSelector) {
+                programmaticSelector.selectByDataAttribute('data-price', '2.00');
+                document.querySelectorAll('#programmatic-container .item').forEach(el => {
+                    if (el.getAttribute('data-price') === '2.00') {
+                        el.classList.add('selected');
+                    } else {
+                        el.classList.remove('selected');
+                    }
+                });
+            }
+        });
+
+        document.getElementById('clear-programmatic').addEventListener('click', () => {
+            if (programmaticSelector) {
+                programmaticSelector.clearSelection();
+                document.querySelectorAll('#programmatic-container .selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+            }
+        });
+
+        // Selection Validation Demo
+        document.getElementById('enable-validation').addEventListener('click', () => {
+            if (!validationSelector) {
+                validationSelector = new MouseSelect({
+                    container: '#validation-container',
+                    selectable: '.item',
+                    validation: (element) => {
+                        const price = parseFloat(element.getAttribute('data-price'));
+                        return price > 1.00;
+                    },
+                    onSelect: (element, index, selectedItems) => {
+                        element.classList.add('selected');
+                        document.getElementById('status-validation').textContent = 
+                            `Status: Enabled - ${selectedItems.length} items selected`;
+                    }
+                });
+            }
+            validationSelector.enable();
+            document.getElementById('status-validation').textContent = 'Status: Enabled';
+        });
+
+        document.getElementById('disable-validation').addEventListener('click', () => {
+            if (validationSelector) {
+                validationSelector.disable();
+                document.getElementById('status-validation').textContent = 'Status: Disabled';
+            }
+        });
+
+        document.getElementById('select-all-validation').addEventListener('click', () => {
+            if (validationSelector) {
+                validationSelector.selectAll();
+                document.querySelectorAll('#validation-container .item').forEach(el => {
+                    const price = parseFloat(el.getAttribute('data-price'));
+                    if (price > 1.00) {
+                        el.classList.add('selected');
+                    } else {
+                        el.classList.remove('selected');
+                    }
+                });
+            }
+        });
+
+        document.getElementById('clear-validation').addEventListener('click', () => {
+            if (validationSelector) {
+                validationSelector.clearSelection();
+                document.querySelectorAll('#validation-container .selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+            }
+        });
+
+        // Virtual Scrolling Demo
+        document.getElementById('enable-virtual').addEventListener('click', () => {
+            if (!virtualSelector) {
+                // Generate 1000 items for virtual scrolling
+                const container = document.getElementById('virtual-container');
+                container.innerHTML = '';
+                for (let i = 0; i < 1000; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'virtual-item';
+                    item.textContent = `Virtual Item ${i + 1}`;
+                    item.setAttribute('data-index', i);
+                    container.appendChild(item);
+                }
+
+                virtualSelector = new MouseSelect({
+                    container: '#virtual-container',
+                    selectable: '.virtual-item',
+                    virtualScrolling: true,
+                    virtualItemHeight: 50,
+                    onSelect: (element, index, selectedItems) => {
+                        element.classList.add('selected');
+                        document.getElementById('status-virtual').textContent = 
+                            `Status: Enabled - ${selectedItems.length} items selected`;
+                    }
+                });
+            }
+            virtualSelector.enable();
+            document.getElementById('status-virtual').textContent = 'Status: Enabled';
+        });
+
+        document.getElementById('disable-virtual').addEventListener('click', () => {
+            if (virtualSelector) {
+                virtualSelector.disable();
+                document.getElementById('status-virtual').textContent = 'Status: Disabled';
+            }
+        });
+
+        document.getElementById('select-some-virtual').addEventListener('click', () => {
+            if (virtualSelector) {
+                virtualSelector.selectByIndices([0, 5, 10, 15, 20]);
+                document.querySelectorAll('#virtual-container .virtual-item').forEach((el, index) => {
+                    if ([0, 5, 10, 15, 20].includes(index)) {
+                        el.classList.add('selected');
+                    } else {
+                        el.classList.remove('selected');
+                    }
+                });
+            }
+        });
+
+        document.getElementById('clear-virtual').addEventListener('click', () => {
+            if (virtualSelector) {
+                virtualSelector.clearSelection();
+                document.querySelectorAll('#virtual-container .selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+            }
+        });
+
+        // Touch Support Demo
+        document.getElementById('enable-touch').addEventListener('click', () => {
+            if (!touchSelector) {
+                touchSelector = new MouseSelect({
+                    container: '#touch-container',
+                    selectable: '.item',
+                    touchEnabled: document.getElementById('touch-enabled').checked,
+                    onSelect: (element, index, selectedItems) => {
+                        element.classList.add('selected');
+                        document.getElementById('status-touch').textContent = 
+                            `Status: Enabled - ${selectedItems.length} items selected`;
+                    },
+                    onTouchStart: (e) => {
+                        document.getElementById('status-touch').textContent = 'Status: Touch started';
+                    },
+                    onTouchEnd: (e) => {
+                        document.getElementById('status-touch').textContent = 'Status: Touch ended';
+                    }
+                });
+            }
+            touchSelector.enable();
+            document.getElementById('status-touch').textContent = 'Status: Enabled';
+        });
+
+        document.getElementById('disable-touch').addEventListener('click', () => {
+            if (touchSelector) {
+                touchSelector.disable();
+                document.getElementById('status-touch').textContent = 'Status: Disabled';
+            }
+        });
+
+        document.getElementById('clear-touch').addEventListener('click', () => {
+            if (touchSelector) {
+                touchSelector.clearSelection();
+                document.querySelectorAll('#touch-container .selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+            }
+        });
+
+        // Toggle touch support
+        document.getElementById('touch-enabled').addEventListener('change', (e) => {
+            if (touchSelector) {
+                if (e.target.checked) {
+                    touchSelector.enableTouch();
+                } else {
+                    touchSelector.disableTouch();
+                }
+            }
+        });
+
+        // Drag and Drop Demo
+        document.getElementById('enable-drag').addEventListener('click', () => {
+            if (!dragSelector) {
+                dragSelector = new MouseSelect({
+                    container: '#drag-container',
+                    selectable: '.item',
+                    dragEnabled: document.getElementById('drag-enabled').checked,
+                    onSelect: (element, index, selectedItems) => {
+                        element.classList.add('selected');
+                        document.getElementById('status-drag').textContent = 
+                            `Status: Enabled - ${selectedItems.length} items selected`;
+                    },
+                    onDragStart: (e, element) => {
+                        document.getElementById('status-drag').textContent = 'Status: Drag started';
+                    },
+                    onDragEnd: (e, element) => {
+                        document.getElementById('status-drag').textContent = 'Status: Drag ended';
+                    }
+                });
+            }
+            dragSelector.enable();
+            document.getElementById('status-drag').textContent = 'Status: Enabled';
+        });
+
+        document.getElementById('disable-drag').addEventListener('click', () => {
+            if (dragSelector) {
+                dragSelector.disable();
+                document.getElementById('status-drag').textContent = 'Status: Disabled';
+            }
+        });
+
+        document.getElementById('clear-drag').addEventListener('click', () => {
+            if (dragSelector) {
+                dragSelector.clearSelection();
+                document.querySelectorAll('#drag-container .selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+            }
+        });
+
+        // Toggle drag support
+        document.getElementById('drag-enabled').addEventListener('change', (e) => {
+            if (dragSelector) {
+                if (e.target.checked) {
+                    dragSelector.enableDrag();
+                } else {
+                    dragSelector.disableDrag();
+                }
+            }
+        });
+
+        // Drop zone functionality
+        const dropZone = document.getElementById('drop-zone');
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            
+            const draggedElement = e.dataTransfer.getData('text/html');
+            if (draggedElement) {
+                dropZone.innerHTML += `<div class="item">${draggedElement}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>
